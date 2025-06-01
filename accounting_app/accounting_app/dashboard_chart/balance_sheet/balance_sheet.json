@@ -1,0 +1,45 @@
+{
+ "chart_name": "Balance Sheet",
+ "chart_type": "Report",
+ "creation": "2025-05-31 12:04:39.376249",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "dynamic_filters_json": "{}",
+ "filters_json": "{\"from_date\":\"2025-05-01\",\"to_date\":\"2025-05-31\"}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "modified": "2025-05-31 12:07:16.298860",
+ "modified_by": "Administrator",
+ "module": "Accounting App",
+ "name": "Balance Sheet",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Balance Sheet",
+ "roles": [],
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "x_field": "account_type",
+ "y_axis": [
+  {
+   "color": "#EC864B",
+   "y_field": "opening_balance"
+  },
+  {
+   "color": "#ED6396",
+   "y_field": "total_debit"
+  },
+  {
+   "color": "#39E4A5",
+   "y_field": "total_credit"
+  },
+  {
+   "color": "#ECAD4B",
+   "y_field": "balance"
+  }
+ ]
+}

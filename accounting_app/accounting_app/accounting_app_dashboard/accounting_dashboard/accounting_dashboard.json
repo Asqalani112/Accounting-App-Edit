@@ -1,0 +1,33 @@
+{
+ "cards": [],
+ "charts": [
+  {
+   "chart": "General Ledger",
+   "width": "Full"
+  },
+  {
+   "chart": "Trial Balance",
+   "width": "Half"
+  },
+  {
+   "chart": "Balance Sheet",
+   "width": "Half"
+  },
+  {
+   "chart": "Profit and Loss Statement",
+   "width": "Full"
+  }
+ ],
+ "creation": "2025-05-31 11:50:35.170412",
+ "dashboard_name": "Accounting Dashboard",
+ "docstatus": 0,
+ "doctype": "Dashboard",
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "modified": "2025-05-31 12:09:24.405780",
+ "modified_by": "Administrator",
+ "module": "Accounting App",
+ "name": "Accounting Dashboard",
+ "owner": "Administrator"
+}
