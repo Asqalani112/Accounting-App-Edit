@@ -8,40 +8,40 @@ from ...utils.gl_entry import make_reverse_gl_entries
 
 
 
-def on_submit(doc, method):
-
-	entries = []
-
-	# Debit: Customer
-	entries.append({
-		"posting_date": doc.posting_date,
-		"due_date": doc.payment_due_date,
-		"party": doc.customer,
-		"account": doc.debit_to,
-		"debit_amount": doc.total_amount,
-		"credit_amount": 0,
-		"voucher_type": "Sales Invoice",
-		"voucher_number": doc.name
-	})
-
-	# Credit: Income Account
-	entries.append({
-		"posting_date": doc.posting_date,
-		"due_date": doc.payment_due_date,
-		"account": doc.income_account,
-		"debit_amount": 0,
-		"credit_amount": doc.total_amount,
-		"voucher_type": "Sales Invoice",
-		"voucher_number": doc.name
-	})
-
-	make_gl_entries(entries)
-
-def on_cancel(doc, method):
-	make_reverse_gl_entries("Sales Invoice", doc.name)
 
 
 class SalesInvoice(Document):
+	def on_submit(self):
+		entries = []
+
+		# Debit: Customer
+		entries.append({
+			"posting_date": self.posting_date,
+			"due_date": self.payment_due_date,
+			"party": self.customer,
+			"account": self.debit_to,
+			"debit_amount": self.total_amount,
+			"credit_amount": 0,
+			"voucher_type": "Sales Invoice",
+			"voucher_number": self.name
+		})
+
+		# Credit: Income Account
+		entries.append({
+			"posting_date": self.posting_date,
+			"due_date": self.payment_due_date,
+			"account": self.income_account,
+			"debit_amount": 0,
+			"credit_amount": self.total_amount,
+			"voucher_type": "Sales Invoice",
+			"voucher_number": self.name
+		})
+
+		make_gl_entries(entries)
+
+	def on_cancel(self):
+		make_reverse_gl_entries("Sales Invoice", self.name)
+
 	def validate(self):
 		# حساب amount لكل عنصر
 		for item in self.items:
