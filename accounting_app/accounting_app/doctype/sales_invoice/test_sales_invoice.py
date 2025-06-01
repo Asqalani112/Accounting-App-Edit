@@ -1,6 +1,6 @@
 import frappe
 from frappe.tests.utils import FrappeTestCase
-from ...doctype.sales_invoice.sales_invoice import on_submit
+# from ...doctype.sales_invoice.sales_invoice import on_submit
 
 class TestSalesInvoice(FrappeTestCase):
 
@@ -37,8 +37,11 @@ class TestSalesInvoice(FrappeTestCase):
         }).insert(ignore_permissions=True)
 
     def test_sales_invoice_gl_entry(self):
+        qty = 2
+        rate = 100
+        amount = qty * rate
         # Create Sales Invoice
-        invoice = frappe.get_doc({
+        self.invoice = frappe.get_doc({
             "doctype": "Sales Invoice",
             "naming_series": "SINV-",
             "customer": self.customer.name,
@@ -47,17 +50,17 @@ class TestSalesInvoice(FrappeTestCase):
             "debit_to": self.debit_account.name,
             "income_account": self.income_account.name,
             "items": [
-                {"item": self.item.name, "qty": 2, "rate": 100}
+                {"item": self.item.name, "qty": qty, "rate": rate}
             ]
         })
-        invoice.insert(ignore_permissions=True)
-        invoice.submit()
+        self.invoice.insert(ignore_permissions=True)
+        self.invoice.submit()
         frappe.db.commit()
 
         # Get GL Entries
         gl_entries = frappe.get_all("GL Entry", filters={
             "voucher_type": "Sales Invoice",
-            "voucher_number": invoice.name
+            "voucher_number": self.invoice.name
         }, fields=["account", "debit_amount", "credit_amount", "party", "posting_date"])
 
         self.assertEqual(len(gl_entries), 2)
@@ -65,13 +68,24 @@ class TestSalesInvoice(FrappeTestCase):
         # Verify totals
         total_debit = sum([entry.debit_amount for entry in gl_entries])
         total_credit = sum([entry.credit_amount for entry in gl_entries])
-        self.assertEqual(total_debit, 200)
-        self.assertEqual(total_credit, 200)
+        self.assertEqual(total_debit, amount)
+        self.assertEqual(total_credit, amount)
 
         accounts = [entry.account for entry in gl_entries]
         self.assertIn(self.debit_account.name, accounts)
         self.assertIn(self.income_account.name, accounts)
 
         # Verify party is attached to receivable line
-        receivable_entry = next(e for e in gl_entries if e.account == self.debit_account.name)
+        receivable_entry = next(entry for entry in gl_entries if entry.account == self.debit_account.name)
         self.assertEqual(receivable_entry.party, self.customer.name)
+    def tearDown(self):
+        # Delete created documents
+        frappe.delete_doc("Sales Invoice", self.invoice.name)
+        frappe.db.delete("GL Entry", {"voucher_type": "Sales Invoice", "voucher_number": self.invoice.name})
+        frappe.delete_doc("Party", self.customer.name)
+        frappe.delete_doc("Account", self.debit_account.name)
+        frappe.delete_doc("Account", self.income_account.name)
+        frappe.delete_doc("Item", self.item.name)
+
+
+        frappe.db.commit()

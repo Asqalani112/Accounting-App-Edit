@@ -27,7 +27,8 @@ class TestPaymentEntry(FrappeTestCase):
         }).insert(ignore_permissions=True)
 
     def test_payment_entry_receive_creates_gl_entries(self):
-        payment_entry = frappe.get_doc({
+        amount = 300
+        self.payment_entry = frappe.get_doc({
             "doctype": "Payment Entry",
             "naming_series": "PE-",
             "payment_type": "Receive",
@@ -36,26 +37,38 @@ class TestPaymentEntry(FrappeTestCase):
             "party": self.customer.name,
             "account_paid_to": self.bank_account.name,
             "account_paid_from": self.receivable_account.name,
-            "amount": 300
+            "amount": amount
         })
-        payment_entry.insert(ignore_permissions=True)
-        payment_entry.submit()
+        self.payment_entry.insert(ignore_permissions=True)
+        self.payment_entry.submit()
         frappe.db.commit()
 
         gl_entries = frappe.get_all("GL Entry", filters={
             "voucher_type": "Payment Entry",
-            "voucher_number": payment_entry.name
+            "voucher_number": self.payment_entry.name
         }, fields=["account", "debit_amount", "credit_amount", "party"])
 
         self.assertEqual(len(gl_entries), 2)
 
-        debit_entry = next(e for e in gl_entries if e.debit_amount > 0)
-        credit_entry = next(e for e in gl_entries if e.credit_amount > 0)
+        debit_entry = next(entry for entry in gl_entries if entry.debit_amount > 0)
+        credit_entry = next(entry for entry in gl_entries if entry.credit_amount > 0)
 
         # Check values
         self.assertEqual(debit_entry.account, self.bank_account.name)
-        self.assertEqual(debit_entry.debit_amount, 300)
+        self.assertEqual(debit_entry.debit_amount, amount)
 
         self.assertEqual(credit_entry.account, self.receivable_account.name)
-        self.assertEqual(credit_entry.credit_amount, 300)
+        self.assertEqual(credit_entry.credit_amount, amount)
         self.assertEqual(credit_entry.party, self.customer.name)
+
+    def tearDown(self):
+        # Delete created documents
+        frappe.delete_doc("Payment Entry", self.payment_entry.name)
+        frappe.db.delete("GL Entry", {"voucher_type": "Payment Entry", "voucher_number": self.payment_entry.name})
+        frappe.delete_doc("Party", self.customer.name)
+        frappe.delete_doc("Account", self.bank_account.name)
+        frappe.delete_doc("Account", self.receivable_account.name)
+
+
+
+        frappe.db.commit()
