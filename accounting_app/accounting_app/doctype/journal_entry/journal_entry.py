@@ -8,28 +8,30 @@ from ...utils.gl_entry import make_gl_entries
 from ...utils.gl_entry import make_reverse_gl_entries
 
 
-def on_submit(doc, method):
-    entries = []
 
-    for row in doc.accounting_entries:
-        entries.append({
-            "posting_date": doc.posting_date,
-            "due_date": doc.posting_date,
-            "party": row.party,
-            "account": row.account,
-            "debit_amount": row.debit,
-            "credit_amount": row.credit,
-            "voucher_type": "Journal Entry",
-            "voucher_number": doc.name
-        })
-
-    make_gl_entries(entries)
-
-def on_cancel(doc, method):
-    make_reverse_gl_entries("Journal Entry", doc.name)
 
 
 class JournalEntry(Document):
+    def on_submit(self):
+        entries = []
+
+        for row in self.accounting_entries:
+            entries.append({
+                "posting_date": self.posting_date,
+                "due_date": self.posting_date,
+                "party": row.party,
+                "account": row.account,
+                "debit_amount": row.debit,
+                "credit_amount": row.credit,
+                "voucher_type": "Journal Entry",
+                "voucher_number": self.name
+            })
+
+        make_gl_entries(entries)
+
+    def on_cancel(self):
+        make_reverse_gl_entries("Journal Entry", self.name)
+
     def validate(self):
         total_debit = 0
         total_credit = 0
