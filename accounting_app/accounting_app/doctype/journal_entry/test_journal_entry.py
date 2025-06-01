@@ -21,7 +21,7 @@ class TestJournalEntry(FrappeTestCase):
     def test_journal_entry_balancing(self):
         debit_credit_amount = 300
 
-        journal = frappe.get_doc({
+        self.journal = frappe.get_doc({
             "doctype": "Journal Entry",
             "naming_series":"JE-",
             "posting_date": "2025-05-28",
@@ -30,14 +30,14 @@ class TestJournalEntry(FrappeTestCase):
                 {"account": self.credit_account.name, "debit": 0, "credit": debit_credit_amount}
             ]
         })
-        journal.insert(ignore_permissions=True)
-        journal.submit()
+        self.journal.insert(ignore_permissions=True)
+        self.journal.submit()
         frappe.db.commit()
 
         # Check GL Entries created
         gl_entries = frappe.get_all("GL Entry", filters={
             "voucher_type": "Journal Entry",
-            "voucher_number": journal.name
+            "voucher_number": self.journal.name
         }, fields=["account", "debit_amount", "credit_amount", "posting_date"])
 
         self.assertEqual(len(gl_entries), 2)
@@ -47,3 +47,15 @@ class TestJournalEntry(FrappeTestCase):
 
         self.assertEqual(total_debit, debit_credit_amount)
         self.assertEqual(total_credit, debit_credit_amount)
+
+    def tearDown(self):
+        # Delete created documents
+        frappe.delete_doc("Journal Entry", self.journal.name)
+        frappe.db.delete("GL Entry", {"voucher_type": "Journal Entry", "voucher_number": self.journal.name})
+
+        frappe.delete_doc("Account", self.debit_account.name)
+        frappe.delete_doc("Account", self.credit_account.name)
+
+
+
+        frappe.db.commit()
