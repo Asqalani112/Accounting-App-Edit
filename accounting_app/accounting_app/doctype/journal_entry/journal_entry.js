@@ -1,3 +1,14 @@
+frappe.ui.form.on("Journal Entry", {
+  onload: function(frm) {
+    frm.fields_dict["accounting_entries"].grid.get_field("account").get_query = function(doc, cdt, cdn) {
+      return {
+        filters: {
+          is_group: 0
+        }
+      };
+    };
+  }
+});
 
 frappe.ui.form.on('Journal Entry', {
   validate: function(frm) {
