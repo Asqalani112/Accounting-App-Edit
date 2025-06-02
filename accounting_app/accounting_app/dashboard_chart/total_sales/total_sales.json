@@ -22,6 +22,7 @@
  "report_name": "General Ledger",
  "roles": [],
  "source": "",
+
  "time_interval": "Yearly",
  "timeseries": 0,
  "timespan": "Last Year",
