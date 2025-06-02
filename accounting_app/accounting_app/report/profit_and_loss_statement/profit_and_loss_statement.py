@@ -20,7 +20,7 @@ def execute(filters=None):
 
     data = []
     for acc in accounts:
-        totals = frappe.db.sql("""
+        totals = frappe.db.sql(""" 
             SELECT
                 SUM(gl.debit_amount) as total_debit,
                 SUM(gl.credit_amount) as total_credit
