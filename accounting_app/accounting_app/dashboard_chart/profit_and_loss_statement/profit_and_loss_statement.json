@@ -1,0 +1,33 @@
+{
+ "chart_name": "Profit and Loss Statement",
+ "chart_type": "Report",
+ "creation": "2025-05-31 12:08:10.393261",
+ "docstatus": 0,
+ "doctype": "Dashboard Chart",
+ "dynamic_filters_json": "{}",
+ "filters_json": "{\"from_date\":\"2025-05-01\",\"to_date\":\"2025-05-31\"}",
+ "group_by_type": "Count",
+ "idx": 0,
+ "is_public": 1,
+ "is_standard": 1,
+ "modified": "2025-05-31 12:08:55.774215",
+ "modified_by": "Administrator",
+ "module": "Accounting App",
+ "name": "Profit and Loss Statement",
+ "number_of_groups": 0,
+ "owner": "Administrator",
+ "report_name": "Profit and Loss Statement",
+ "roles": [],
+ "time_interval": "Yearly",
+ "timeseries": 0,
+ "timespan": "Last Year",
+ "type": "Bar",
+ "use_report_chart": 0,
+ "x_field": "account_type",
+ "y_axis": [
+  {
+   "color": "#39E4A5",
+   "y_field": "balance"
+  }
+ ]
+}

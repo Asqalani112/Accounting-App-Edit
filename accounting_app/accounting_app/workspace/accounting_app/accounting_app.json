@@ -1,0 +1,85 @@
+{
+ "category": "Modules",
+ "charts": [
+  {
+   "chart_name": "General Ledger",
+   "label": "General Ledger Chart"
+  }
+ ],
+ "creation": "2025-05-31 12:16:34.985706",
+ "developer_mode_only": 0,
+ "disable_user_customization": 0,
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "extends_another_page": 0,
+ "hide_custom": 0,
+ "idx": 0,
+ "is_default": 0,
+ "is_standard": 1,
+ "label": "Accounting App",
+ "links": [],
+ "modified": "2025-05-31 12:28:56.873911",
+ "modified_by": "Administrator",
+ "module": "Accounting App",
+ "name": "Accounting App",
+ "onboarding": "",
+ "owner": "Administrator",
+ "pin_to_bottom": 0,
+ "pin_to_top": 0,
+ "shortcuts": [
+  {
+   "doc_view": "List",
+   "label": "Sales Invoice",
+   "link_to": "Sales Invoice",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Purchase Invoice",
+   "link_to": "Purchase Invoice",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Payment Entry",
+   "link_to": "Payment Entry",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Journal Entry",
+   "link_to": "Journal Entry",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "Dashboard",
+   "label": "Accounting Dashboard",
+   "link_to": "Accounting Dashboard",
+   "type": "Dashboard"
+  },
+  {
+   "doc_view": "Report Builder",
+   "label": "General Ledger Report",
+   "link_to": "General Ledger",
+   "type": "Report"
+  },
+  {
+   "doc_view": "Report Builder",
+   "label": "Balance Sheet Report",
+   "link_to": "Balance Sheet",
+   "type": "Report"
+  },
+  {
+   "doc_view": "Report Builder",
+   "label": "Trial Balance Report",
+   "link_to": "Trial Balance",
+   "type": "Report"
+  },
+  {
+   "doc_view": "Report Builder",
+   "label": "Profit and Loss Statement Report",
+   "link_to": "Profit and Loss Statement",
+   "type": "Report"
+  }
+ ]
+}

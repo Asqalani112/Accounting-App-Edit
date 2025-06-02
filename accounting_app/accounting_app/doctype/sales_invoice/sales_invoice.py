@@ -3,14 +3,14 @@
 
 import frappe
 from frappe.model.document import Document
-from ...utils.gl_entry import make_gl_entries
-from ...utils.gl_entry import make_reverse_gl_entries
+from ...utils.account_controller import AccountController
 
 
 
 
 
-class SalesInvoice(Document):
+
+class SalesInvoice(Document, AccountController):
 	def on_submit(self):
 		entries = []
 
@@ -37,10 +37,10 @@ class SalesInvoice(Document):
 			"voucher_number": self.name
 		})
 
-		make_gl_entries(entries)
+		self.make_gl_entries(entries)
 
 	def on_cancel(self):
-		make_reverse_gl_entries("Sales Invoice", self.name)
+		self.make_reverse_gl_entries("Sales Invoice", self.name)
 
 	def validate(self):
 		# حساب amount لكل عنصر
