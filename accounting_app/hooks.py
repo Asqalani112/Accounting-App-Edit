@@ -187,29 +187,7 @@ user_data_fields = [
 # auth_hooks = [
 #	"accounting_app.auth.validate"
 # ]
-doc_events = {
-    "Sales Invoice": {
-        "on_submit": "accounting_app.accounting_app.doctype.sales_invoice.sales_invoice.on_submit",
-        "on_cancel": "accounting_app.accounting_app.doctype.sales_invoice.sales_invoice.on_cancel"
-    },
-	"Purchase Invoice": {
-			"on_submit": "accounting_app.accounting_app.doctype.purchase_invoice.purchase_invoice.on_submit",
-			"on_cancel": "accounting_app.accounting_app.doctype.purchase_invoice.purchase_invoice.on_cancel"
-		},
-	"Payment Entry": {
-		"on_submit": "accounting_app.accounting_app.doctype.payment_entry.payment_entry.on_submit",
-		"on_cancel": "accounting_app.accounting_app.doctype.payment_entry.payment_entry.on_cancel"
-	},
-	"Journal Entry": {
-		"on_submit": "accounting_app.accounting_app.doctype.journal_entry.journal_entry.on_submit",
-		"on_cancel": "accounting_app.accounting_app.doctype.journal_entry.journal_entry.on_cancel"
-	}
 
-
-
-
-
-}
 
 
 

@@ -29,7 +29,7 @@ class AccountController:
             reversed_entry.due_date = entry.due_date
             reversed_entry.party = entry.party
             reversed_entry.account = entry.account
-            reversed_entry.debit_amount = entry.credit_amount  # عكس القيم
+            reversed_entry.debit_amount = entry.credit_amount  #  عكس القيم
             reversed_entry.credit_amount = entry.debit_amount
             reversed_entry.voucher_type = voucher_type
             reversed_entry.voucher_number = voucher_number
