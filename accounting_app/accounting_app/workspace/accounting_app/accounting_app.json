@@ -18,7 +18,7 @@
  "is_standard": 1,
  "label": "Accounting App",
  "links": [],
- "modified": "2025-05-31 12:28:56.873911",
+ "modified": "2025-06-02 17:05:41.294189",
  "modified_by": "Administrator",
  "module": "Accounting App",
  "name": "Accounting App",
@@ -80,6 +80,24 @@
    "label": "Profit and Loss Statement Report",
    "link_to": "Profit and Loss Statement",
    "type": "Report"
+  },
+  {
+   "doc_view": "List",
+   "label": "Account",
+   "link_to": "Account",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Items",
+   "link_to": "Item",
+   "type": "DocType"
+  },
+  {
+   "doc_view": "List",
+   "label": "Fiscal Year",
+   "link_to": "Fiscal Year",
+   "type": "DocType"
   }
  ]
 }
