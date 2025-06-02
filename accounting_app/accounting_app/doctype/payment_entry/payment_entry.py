@@ -3,13 +3,13 @@
 
 import frappe
 from frappe.model.document import Document
-from ...utils.gl_entry import make_gl_entries
-from ...utils.gl_entry import make_reverse_gl_entries
+from ...utils.account_controller import AccountController
 
 
 
 
-class PaymentEntry(Document):
+
+class PaymentEntry(Document, AccountController):
     def on_submit(self):
         if self.payment_type == "Receive":
             # استلام من زبون
@@ -57,7 +57,7 @@ class PaymentEntry(Document):
                 }
             ]
 
-        make_gl_entries(entries)
+        self.make_gl_entries(entries)
 
     def on_cancel(self):
-        make_reverse_gl_entries("Payment Entry", self.name)
+        self.make_reverse_gl_entries("Payment Entry", self.name)
