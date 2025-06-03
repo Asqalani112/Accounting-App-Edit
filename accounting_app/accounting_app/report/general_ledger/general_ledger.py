@@ -14,7 +14,7 @@ def execute(filters=None):
     gl.account,
     p.party_type AS party,  -- هنا بدّلنا party باسم النوع فقط
     gl.debit_amount,
-    gl.credit_amount,
+    gl.credit_amount, 
     gl.voucher_type,
     gl.voucher_number
 FROM

@@ -21,7 +21,7 @@ def execute(filters=None):
             SUM(credit_amount) AS total_credit,
             SUM(debit_amount - credit_amount) AS balance
         FROM `tabGL Entry` gl
-        WHERE {conditions}
+        WHERE {conditions} 
         GROUP BY account
         ORDER BY account
     """, filters, as_dict=True)

@@ -15,7 +15,7 @@ def execute(filters=None):
         SELECT 
             child.name, 
             child.opening_balance,
-            parent.account_type AS parent_type,
+            parent.account_type AS parent_type,  
             child.account_type AS child_type
         FROM `tabAccount` child
         LEFT JOIN `tabAccount` parent ON child.parent_account = parent.name
