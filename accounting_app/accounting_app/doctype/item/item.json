@@ -10,7 +10,9 @@
   "item_code",
   "item_name",
   "default_unit_of_measurement",
-  "standard_selling_rate"
+  "standard_selling_rate",
+  "default_warehouse",
+  "valuation_rate"
  ],
  "fields": [
   {
@@ -36,11 +38,22 @@
    "fieldname": "standard_selling_rate",
    "fieldtype": "Currency",
    "label": "Standard Selling Rate"
+  },
+  {
+   "fieldname": "default_warehouse",
+   "fieldtype": "Link",
+   "label": "Default Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "fieldname": "valuation_rate",
+   "fieldtype": "Currency",
+   "label": "Valuation Rate"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-05-26 16:36:31.367380",
+ "modified": "2025-06-03 14:44:31.347367",
  "modified_by": "Administrator",
  "module": "Accounting App",
  "name": "Item",

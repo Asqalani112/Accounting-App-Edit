@@ -33,7 +33,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Account Type",
-   "options": "Receivable\nPayable\nBank\nCash\nIncome\nExpense\nAssets\nLiability",
+   "options": "Receivable\nPayable\nBank\nCash\nIncome\nExpense\nAssets\nLiability\nInventory",
    "reqd": 1
   },
   {
@@ -91,7 +91,7 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-05-29 12:35:04.256794",
+ "modified": "2025-06-03 14:02:40.410811",
  "modified_by": "Administrator",
  "module": "Accounting App",
  "name": "Account",
