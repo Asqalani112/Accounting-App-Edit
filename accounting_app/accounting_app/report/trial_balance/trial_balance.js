@@ -21,3 +21,16 @@ frappe.query_reports["Trial Balance"] = {
         }
     ]
 }
+frappe.query_reports["Trial Balance"] = {
+
+    formatter: function(value, row, column, data, default_formatter) {
+        value = default_formatter(value, row, column, data);
+
+        if (data.is_total_row) {
+            value = `<b style="color:#0a58ca;">${value}</b>`;
+        }
+
+        return value;
+    }
+};
+
