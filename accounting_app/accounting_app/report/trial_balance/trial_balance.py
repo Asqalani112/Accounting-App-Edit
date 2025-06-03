@@ -25,6 +25,17 @@ def execute(filters=None):
         GROUP BY account
         ORDER BY account
     """, filters, as_dict=True)
+    total_debit = sum(row["total_debit"] or 0 for row in data)
+    total_credit = sum(row["total_credit"] or 0 for row in data)
+    data.append({
+        "account": "Total",
+        "account_type": "",
+        "total_debit": total_debit,
+        "total_credit": total_credit,
+        "balance": total_debit - total_credit,
+        "is_total_row": 1
+
+    })
 
     columns = [
         {"fieldname": "account", "label": "Account", "fieldtype": "Link", "options": "Account", "width": 200},
