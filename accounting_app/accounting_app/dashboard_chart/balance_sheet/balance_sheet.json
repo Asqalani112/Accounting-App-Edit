@@ -26,6 +26,7 @@
  "x_field": "account_type",
  "y_axis": [
   {
+
    "color": "#EC864B",
    "y_field": "opening_balance"
   },
