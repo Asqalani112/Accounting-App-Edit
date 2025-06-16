@@ -38,11 +38,25 @@ class PurchaseInvoice(Document, AccountController, StockController):
         self.make_gl_entries(entries)
 
         stock_entries = []
-        valuation_rate = self.total_amount / self.total_qty if self.total_qty else 0
+
         for item in self.items:
 
             if not self.default_warehouse:
                 frappe.throw(f"Please set Warehouse for item {item.item}")
+
+            entries = frappe.get_all(
+                "Stock Ledger Entry",
+                filters={
+                    "item": item.item,
+                    "warehouse": self.default_warehouse,
+                    "is_cancelled": 0
+                },
+                fields=["qty", "stock_value"]
+            )
+            total_qty = sum(entry.qty or 0 for entry in entries)
+            total_value = sum(entry.stock_value or 0 for entry in entries)
+
+            valuation_rate = (total_value / total_qty) if total_qty else 0
 
             stock_entries.append({
                 "posting_date": self.posting_date,
