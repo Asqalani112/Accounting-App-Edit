@@ -38,7 +38,7 @@ class PurchaseInvoice(Document, AccountController, StockController):
         self.make_gl_entries(entries)
 
         stock_entries = []
-
+        valuation_rate = self.total_amount / self.total_qty if self.total_qty else 0
         for item in self.items:
 
             if not self.default_warehouse:
@@ -50,7 +50,7 @@ class PurchaseInvoice(Document, AccountController, StockController):
                 "item": item.item,
                 "warehouse": self.default_warehouse,
                 "qty": item.qty,
-                "valuation_rate": item.rate,
+                "valuation_rate": valuation_rate,
                 "voucher_type": "Purchase Invoice",
                 "voucher_no": self.name,
                 "is_cancelled": 0
@@ -81,7 +81,7 @@ class PurchaseInvoice(Document, AccountController, StockController):
 
     def on_cancel(self):
         self.make_reverse_gl_entries("Purchase Invoice", self.name)
-        self.delete_stock_ledger_entries("Purchase Invoice", self.name)
+        self.make_reverse_stock_ledger_entries("Purchase Invoice", self.name)
 
     def validate(self):
         # حساب amount لكل عنصر في الفاتورة
