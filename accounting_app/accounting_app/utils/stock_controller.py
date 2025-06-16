@@ -10,13 +10,15 @@ class StockController:
             sle.posting_time = entry.get("posting_time")
             sle.item = entry.get("item")
             sle.warehouse = entry.get("warehouse")
-            sle.qty = entry.get("qty", 0)
+            sle.qty = entry.get("qty")
             sle.valuation_rate = entry.get("valuation_rate")
             sle.stock_value = sle.qty * sle.valuation_rate
             sle.voucher_type = entry.get("voucher_type")
             sle.voucher_no = entry.get("voucher_no")
             sle.is_cancelled = entry.get("is_cancelled", 0)
             sle.insert()
+            sle.submit()
+
 
     def make_reverse_stock_ledger_entries(self, voucher_type, voucher_no):
         original_entries = frappe.get_all(

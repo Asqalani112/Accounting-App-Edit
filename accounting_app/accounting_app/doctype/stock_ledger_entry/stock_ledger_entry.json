@@ -16,7 +16,8 @@
   "stock_value",
   "voucher_type",
   "voucher_no",
-  "is_cancelled"
+  "is_cancelled",
+  "amended_from"
  ],
  "fields": [
   {
@@ -74,11 +75,21 @@
    "fieldname": "is_cancelled",
    "fieldtype": "Check",
    "label": "Is Cancelled"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Stock Ledger Entry",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
+ "is_submittable": 1,
  "links": [],
- "modified": "2025-06-03 14:35:04.907901",
+ "modified": "2025-06-16 14:59:27.401753",
  "modified_by": "Administrator",
  "module": "Accounting App",
  "name": "Stock Ledger Entry",

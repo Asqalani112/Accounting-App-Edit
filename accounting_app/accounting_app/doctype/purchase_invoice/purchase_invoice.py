@@ -51,8 +51,8 @@ class PurchaseInvoice(Document, AccountController, StockController):
                 FROM `tabStock Ledger Entry`
                 WHERE
                     item = %s AND
-                    warehouse = %s AND
-                    is_cancelled = 0
+                    warehouse = %s 
+                    
             """, (item.item, self.default_warehouse), as_dict=True)[0]
 
             total_qty = data.total_qty or 0
