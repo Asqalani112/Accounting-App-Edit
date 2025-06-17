@@ -13,6 +13,8 @@ from ...utils.stock_controller import StockController
 
 class PurchaseInvoice(Document, AccountController, StockController):
     def on_submit(self):
+        for item in self.items:
+            inventory_account = frappe.db.get_value("Warehouse", item.warehouse, "inventory_account")
         entries = [
             {
                 "posting_date": self.posting_date,
@@ -29,6 +31,27 @@ class PurchaseInvoice(Document, AccountController, StockController):
                 "due_date": self.payment_due_date,
                 "party": self.supplier,
                 "account": self.credit_to,  # حساب المورد (payable)
+                "debit_amount": 0,
+                "credit_amount": self.total_amount,
+                "voucher_type": "Purchase Invoice",
+                "voucher_number": self.name
+            },
+
+            {
+                "posting_date": self.posting_date,
+                "due_date": self.payment_due_date,
+                "party": None,
+                "account": inventory_account,  # حساب المخزون (inventory)
+                "debit_amount": self.total_amount,
+                "credit_amount": 0,
+                "voucher_type": "Purchase Invoice",
+                "voucher_number": self.name
+            },
+            {
+                "posting_date": self.posting_date,
+                "due_date": self.payment_due_date,
+                "party": self.supplier,
+                "account": self.credit_to,  # عملنا credit بقيمة البضاعة من المورد (payable)
                 "debit_amount": 0,
                 "credit_amount": self.total_amount,
                 "voucher_type": "Purchase Invoice",
@@ -72,27 +95,7 @@ class PurchaseInvoice(Document, AccountController, StockController):
                 "is_cancelled": 0
             })
         self.make_stock_ledger_entries(stock_entries)
-        for item in self.items:
 
-            if not self.default_warehouse:
-                frappe.throw(f"Please set Warehouse for item {item.item}")
-
-            inventory_account = frappe.db.get_value("Warehouse", self.default_warehouse, "inventory_account")
-            if not inventory_account:
-                frappe.throw(f"No inventory account linked to warehouse {self.default_warehouse}")
-
-            amount = item.qty * item.rate
-
-            self.make_gl_entries([
-                {
-                    "posting_date": self.posting_date,
-                    "account": inventory_account,
-                    "debit_amount": amount,
-                    "credit_amount": 0,
-                    "voucher_type": "Purchase Invoice",
-                    "voucher_number": self.name
-                }
-            ])
 
 
     def on_cancel(self):
