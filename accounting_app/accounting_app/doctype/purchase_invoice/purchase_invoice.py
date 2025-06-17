@@ -16,26 +16,6 @@ class PurchaseInvoice(Document, AccountController, StockController):
         for item in self.items:
             inventory_account = frappe.db.get_value("Warehouse", item.warehouse, "inventory_account")
         entries = [
-            {
-                "posting_date": self.posting_date,
-                "due_date": self.payment_due_date,
-                "party": None,
-                "account": self.expense_account,  # أو أي حساب مصروف مستخدم
-                "debit_amount": self.total_amount,
-                "credit_amount": 0,
-                "voucher_type": "Purchase Invoice",
-                "voucher_number": self.name
-            },
-            {
-                "posting_date": self.posting_date,
-                "due_date": self.payment_due_date,
-                "party": self.supplier,
-                "account": self.credit_to,  # حساب المورد (payable)
-                "debit_amount": 0,
-                "credit_amount": self.total_amount,
-                "voucher_type": "Purchase Invoice",
-                "voucher_number": self.name
-            },
 
             {
                 "posting_date": self.posting_date,
