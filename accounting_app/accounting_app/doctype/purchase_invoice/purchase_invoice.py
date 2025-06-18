@@ -47,21 +47,7 @@ class PurchaseInvoice(Document, AccountController, StockController):
             if not self.default_warehouse:
                 frappe.throw(f"Please set Warehouse for item {item.item}")
 
-            data = frappe.db.sql("""
-                SELECT
-                    SUM(qty) AS total_qty,
-                    SUM(stock_value) AS total_value
-                FROM `tabStock Ledger Entry`
-                WHERE
-                    item = %s AND
-                    warehouse = %s 
-                    
-            """, (item.item, self.default_warehouse), as_dict=True)[0]
-
-            total_qty = data.total_qty or 0
-            total_value = data.total_value or 0
-
-            valuation_rate = total_value / total_qty if total_qty else 0
+            valuation_rate = item.rate or 0
 
             stock_entries.append({
                 "posting_date": self.posting_date,
