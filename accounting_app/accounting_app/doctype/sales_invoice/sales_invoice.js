@@ -45,7 +45,14 @@ frappe.ui.form.on('Sales Invoice Item', {
   rate: function(frm, cdt, cdn) {
     calculate_amount(cdt, cdn);
     update_totals(frm);
-  }
+  },
+  items_add: function(frm, cdt, cdn) {
+        let row = locals[cdt][cdn];
+        if (frm.doc.default_warehouse) {
+            row.warehouse = frm.doc.default_warehouse;
+            frm.refresh_field("items");
+        }
+    }
 });
 
 function calculate_amount(cdt, cdn) {
