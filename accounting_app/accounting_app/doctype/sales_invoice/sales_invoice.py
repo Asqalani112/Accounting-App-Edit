@@ -43,51 +43,51 @@ class SalesInvoice(Document, AccountController, StockController):
 			valuation_rate = total_value / total_qty if total_qty else 0
 
 
-		entries = []
-
-		# Debit: Customer
-		entries.append({
-			"posting_date": self.posting_date,
-			"due_date": self.payment_due_date,
-			"party": self.customer,
-			"account": self.debit_to,
-			"debit_amount": self.total_amount,
-			"credit_amount": 0,
-			"voucher_type": "Sales Invoice",
-			"voucher_number": self.name
-		})
-
-		# Credit: Income Account
-		entries.append({
-			"posting_date": self.posting_date,
-			"due_date": self.payment_due_date,
-			"account": self.income_account,
-			"debit_amount": 0,
-			"credit_amount": self.total_amount,
-			"voucher_type": "Sales Invoice",
-			"voucher_number": self.name
-		})
 
 
-		entries.append({
-			"posting_date": self.posting_date,
-			"due_date": self.payment_due_date,
-			"account": inventory_account.name,
-			"debit_amount": 0,
-			"credit_amount": self.total_qty * valuation_rate,
-			"voucher_type": "Sales Invoice",
-			"voucher_number": self.name
-		})
+			# Debit: Customer
+			entries.append({
+				"posting_date": self.posting_date,
+				"due_date": self.payment_due_date,
+				"party": self.customer,
+				"account": self.debit_to,
+				"debit_amount": self.total_amount,
+				"credit_amount": 0,
+				"voucher_type": "Sales Invoice",
+				"voucher_number": self.name
+			})
 
-		entries.append({
-			"posting_date": self.posting_date,
-			"due_date": self.payment_due_date,
-			"account": expense_account.name,
-			"debit_amount": self.total_qty * valuation_rate,
-			"credit_amount": 0,
-			"voucher_type": "Sales Invoice",
-			"voucher_number": self.name
-		})
+			# Credit: Income Account
+			entries.append({
+				"posting_date": self.posting_date,
+				"due_date": self.payment_due_date,
+				"account": self.income_account,
+				"debit_amount": 0,
+				"credit_amount": self.total_amount,
+				"voucher_type": "Sales Invoice",
+				"voucher_number": self.name
+			})
+
+
+			entries.append({
+				"posting_date": self.posting_date,
+				"due_date": self.payment_due_date,
+				"account": self.inventory_account,
+				"debit_amount": 0,
+				"credit_amount": self.total_qty * valuation_rate,
+				"voucher_type": "Sales Invoice",
+				"voucher_number": self.name
+			})
+
+			entries.append({
+				"posting_date": self.posting_date,
+				"due_date": self.payment_due_date,
+				"account": self.expense_account,
+				"debit_amount": self.total_qty * valuation_rate,
+				"credit_amount": 0,
+				"voucher_type": "Sales Invoice",
+				"voucher_number": self.name
+			})
 
 		self.make_gl_entries(entries)
 		stock_entries = []
