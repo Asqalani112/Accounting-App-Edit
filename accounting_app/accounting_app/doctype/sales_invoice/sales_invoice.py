@@ -15,11 +15,34 @@ from ...utils.stock_controller import StockController
 class SalesInvoice(Document, AccountController, StockController):
 	def on_submit(self):
 		entries = []
+		# Debit: Customer
+		entries.append({
+			"posting_date": self.posting_date,
+			"due_date": self.payment_due_date,
+			"party": self.customer,
+			"account": self.debit_to,
+			"debit_amount": self.total_amount,
+			"credit_amount": 0,
+			"voucher_type": "Sales Invoice",
+			"voucher_number": self.name
+		})
 
+		# Credit: Income Account
+		entries.append({
+			"posting_date": self.posting_date,
+			"due_date": self.payment_due_date,
+			"account": self.income_account,
+			"debit_amount": 0,
+			"credit_amount": self.total_amount,
+			"voucher_type": "Sales Invoice",
+			"voucher_number": self.name
+		})
+
+		stock_entries = []
 		#get valution rate
 		for item in self.items:
-			self.inventory_account = frappe.db.get_value("Warehouse", item.warehouse, "inventory_account")
-			self.expense_account = frappe.db.get_value("Warehouse", item.warehouse, "expense_account")
+			inventory_account = frappe.db.get_value("Warehouse", item.warehouse, "inventory_account")
+			expense_account = frappe.db.get_value("Warehouse", item.warehouse, "expense_account")
 
 			if not self.default_warehouse:
 				frappe.throw(f"Please set Warehouse for item {item.item}")
@@ -35,75 +58,45 @@ class SalesInvoice(Document, AccountController, StockController):
 		                   docstatus = 1 AND
 		                   qty > 0
 
-		           """, (item.item, self.default_warehouse), as_dict=True)[0]
+		           """, (item.item, item.warehouse), as_dict=True)[0]
 
 			total_qty = data.total_qty or 0
 			total_value = data.total_value or 0
 
 			valuation_rate = total_value / total_qty if total_qty else 0
 
-
-
-
-			# Debit: Customer
 			entries.append({
 				"posting_date": self.posting_date,
 				"due_date": self.payment_due_date,
-				"party": self.customer,
-				"account": self.debit_to,
-				"debit_amount": self.total_amount,
+				"account": inventory_account,
+				"debit_amount": 0,
+				"credit_amount": item.qty * valuation_rate,
+				"voucher_type": "Sales Invoice",
+				"voucher_number": self.name
+			})
+
+			entries.append({
+				"posting_date": self.posting_date,
+				"due_date": self.payment_due_date,
+				"account": expense_account,
+				"debit_amount": item.qty * valuation_rate,
 				"credit_amount": 0,
 				"voucher_type": "Sales Invoice",
 				"voucher_number": self.name
 			})
-
-			# Credit: Income Account
-			entries.append({
-				"posting_date": self.posting_date,
-				"due_date": self.payment_due_date,
-				"account": self.income_account,
-				"debit_amount": 0,
-				"credit_amount": self.total_amount,
-				"voucher_type": "Sales Invoice",
-				"voucher_number": self.name
-			})
-
-
-			entries.append({
-				"posting_date": self.posting_date,
-				"due_date": self.payment_due_date,
-				"account": self.inventory_account,
-				"debit_amount": 0,
-				"credit_amount": self.total_qty * valuation_rate,
-				"voucher_type": "Sales Invoice",
-				"voucher_number": self.name
-			})
-
-			entries.append({
-				"posting_date": self.posting_date,
-				"due_date": self.payment_due_date,
-				"account": self.expense_account,
-				"debit_amount": self.total_qty * valuation_rate,
-				"credit_amount": 0,
-				"voucher_type": "Sales Invoice",
-				"voucher_number": self.name
-			})
-
-		self.make_gl_entries(entries)
-		stock_entries = []
-
-		for item in self.items:
 			stock_entries.append({
 				"posting_date": self.posting_date,
 				"posting_time": nowtime(),
 				"item": item.item,
-				"warehouse": self.default_warehouse,
+				"warehouse": item.warehouse,
 				"qty": -item.qty,
 				"valuation_rate": valuation_rate,
 				"voucher_type": "Sales Invoice",
 				"voucher_no": self.name,
 				"is_cancelled": 0
 			})
+
+		self.make_gl_entries(entries)
 		self.make_stock_ledger_entries(stock_entries)
 
 	def on_cancel(self):
