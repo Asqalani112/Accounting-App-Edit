@@ -8,7 +8,8 @@
  "engine": "InnoDB",
  "field_order": [
   "warehouse_name",
-  "inventory_account"
+  "inventory_account",
+  "expense_account"
  ],
  "fields": [
   {
@@ -21,11 +22,17 @@
    "fieldtype": "Link",
    "label": "Inventory Account",
    "options": "Account"
+  },
+  {
+   "fieldname": "expense_account",
+   "fieldtype": "Link",
+   "label": "Expense Account",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-03 14:18:28.193887",
+ "modified": "2025-06-18 15:31:11.020261",
  "modified_by": "Administrator",
  "module": "Accounting App",
  "name": "Warehouse",
