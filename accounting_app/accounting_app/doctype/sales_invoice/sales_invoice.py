@@ -1,5 +1,6 @@
 # Copyright (c) 2025, asqalani and contributors
 # For license information, please see license.txt
+from collections import defaultdict
 
 import frappe
 from frappe.model.document import Document
@@ -38,6 +39,10 @@ class SalesInvoice(Document, AccountController, StockController):
 			"voucher_number": self.name
 		})
 
+		# تجميع القيود حسب الحساب
+		inventory_totals = defaultdict(float)
+		expense_totals = defaultdict(float)
+
 		stock_entries = []
 		#get valution rate
 		for item in self.items:
@@ -64,26 +69,7 @@ class SalesInvoice(Document, AccountController, StockController):
 			total_value = data.total_value or 0
 
 			valuation_rate = total_value / total_qty if total_qty else 0
-
-			entries.append({
-				"posting_date": self.posting_date,
-				"due_date": self.payment_due_date,
-				"account": inventory_account,
-				"debit_amount": 0,
-				"credit_amount": item.qty * valuation_rate,
-				"voucher_type": "Sales Invoice",
-				"voucher_number": self.name
-			})
-
-			entries.append({
-				"posting_date": self.posting_date,
-				"due_date": self.payment_due_date,
-				"account": expense_account,
-				"debit_amount": item.qty * valuation_rate,
-				"credit_amount": 0,
-				"voucher_type": "Sales Invoice",
-				"voucher_number": self.name
-			})
+			valuation_amount = item.qty * valuation_rate
 			stock_entries.append({
 				"posting_date": self.posting_date,
 				"posting_time": nowtime(),
@@ -95,6 +81,35 @@ class SalesInvoice(Document, AccountController, StockController):
 				"voucher_no": self.name,
 				"is_cancelled": 0
 			})
+
+			# تجميع القيم
+			inventory_totals[inventory_account] += valuation_amount
+			expense_totals[expense_account] += valuation_amount
+
+		# GL entry مجمعة لكل حساب
+		for acc, value in inventory_totals.items():
+			entries.append({
+				"posting_date": self.posting_date,
+				"due_date": self.payment_due_date,
+				"account": acc,
+				"debit_amount": 0,
+				"credit_amount": value,
+				"voucher_type": "Sales Invoice",
+				"voucher_number": self.name
+			})
+
+		for acc, value in expense_totals.items():
+			entries.append({
+				"posting_date": self.posting_date,
+				"due_date": self.payment_due_date,
+				"account": acc,
+				"debit_amount": value,
+				"credit_amount": 0,
+				"voucher_type": "Sales Invoice",
+				"voucher_number": self.name
+			})
+
+
 
 		self.make_gl_entries(entries)
 		self.make_stock_ledger_entries(stock_entries)
