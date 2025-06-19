@@ -14,12 +14,12 @@ from ...utils.stock_controller import StockController
 
 class SalesInvoice(Document, AccountController, StockController):
 	def on_submit(self):
-
-		inventory_account = frappe.get_doc("Account", "Account-0081")
-		expense_account = frappe.get_doc("Account", "Account-0080")
+		entries = []
 
 		#get valution rate
 		for item in self.items:
+			self.inventory_account = frappe.db.get_value("Warehouse", item.warehouse, "inventory_account")
+			self.expense_account = frappe.db.get_value("Warehouse", item.warehouse, "expense_account")
 
 			if not self.default_warehouse:
 				frappe.throw(f"Please set Warehouse for item {item.item}")
