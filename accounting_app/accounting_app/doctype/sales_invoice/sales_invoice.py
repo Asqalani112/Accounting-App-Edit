@@ -82,34 +82,36 @@ class SalesInvoice(Document, AccountController, StockController):
 				"is_cancelled": 0
 			})
 
+			key_inv = (inventory_account, item.warehouse)
+			key_exp = (expense_account, item.warehouse)
+
 			# تجميع القيم
-			inventory_totals[inventory_account] += valuation_amount
-			expense_totals[expense_account] += valuation_amount
+			inventory_totals[key_inv] += valuation_amount
+			expense_totals[key_exp] += valuation_amount
 
-		# GL entry مجمعة لكل حساب
-		for acc, value in inventory_totals.items():
-			entries.append({
-				"posting_date": self.posting_date,
-				"due_date": self.payment_due_date,
-				"account": acc,
-				"debit_amount": 0,
-				"credit_amount": value,
-				"voucher_type": "Sales Invoice",
-				"voucher_number": self.name
-			})
+		for (account, warehouse), value in inventory_totals.items():
+			if value:
+				entries.append({
+					"posting_date": self.posting_date,
+					"due_date": self.payment_due_date,
+					"account": account,
+					"debit_amount": 0,
+					"credit_amount": value,
+					"voucher_type": "Sales Invoice",
+					"voucher_number": self.name,
+				})
 
-		for acc, value in expense_totals.items():
-			entries.append({
-				"posting_date": self.posting_date,
-				"due_date": self.payment_due_date,
-				"account": acc,
-				"debit_amount": value,
-				"credit_amount": 0,
-				"voucher_type": "Sales Invoice",
-				"voucher_number": self.name
-			})
-
-
+		for (account, warehouse), value in expense_totals.items():
+			if value:
+				entries.append({
+					"posting_date": self.posting_date,
+					"due_date": self.payment_due_date,
+					"account": account,
+					"debit_amount": value,
+					"credit_amount": 0,
+					"voucher_type": "Sales Invoice",
+					"voucher_number": self.name,
+				})
 
 		self.make_gl_entries(entries)
 		self.make_stock_ledger_entries(stock_entries)
