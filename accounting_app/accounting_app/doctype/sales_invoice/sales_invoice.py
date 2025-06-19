@@ -32,7 +32,8 @@ class SalesInvoice(Document, AccountController, StockController):
 		               WHERE
 		                   item = %s AND
 		                   warehouse = %s AND
-		                   docstatus = 1
+		                   docstatus = 1 AND
+		                   qty > 0
 
 		           """, (item.item, self.default_warehouse), as_dict=True)[0]
 
