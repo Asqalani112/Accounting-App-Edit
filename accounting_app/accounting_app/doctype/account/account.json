@@ -91,7 +91,7 @@
  "index_web_pages_for_search": 1,
  "is_tree": 1,
  "links": [],
- "modified": "2025-06-03 14:02:40.410811",
+ "modified": "2025-06-24 11:12:30.693971",
  "modified_by": "Administrator",
  "module": "Accounting App",
  "name": "Account",
@@ -113,6 +113,6 @@
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
- "title_field": "account_name",
+ "title_field": "account_type",
  "track_changes": 1
 }

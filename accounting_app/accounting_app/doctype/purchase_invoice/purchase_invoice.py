@@ -16,46 +16,56 @@ class PurchaseInvoice(Document, AccountController, StockController):
     def on_submit(self):
         entries = []
         inventory_totals = defaultdict(float)
+        expense_totals = defaultdict(float)
         stock_entries = []
 
         for item in self.items:
 
-            if not self.default_warehouse:
-                frappe.throw(f"Please set Warehouse for item {item.item}")
+            if item.is_service:
+                expense_account = frappe.db.get_value("Warehouse", item.warehouse, "expense_account")
+                key = (expense_account, item.warehouse)
+                expense_totals[key] += item.qty * item.rate
+                for (account, warehouse), value in expense_totals.items():
+                    if value:
+                        entries.append({
+                            "posting_date": self.posting_date,
+                            "due_date": self.payment_due_date,
+                            "account": account,
+                            "debit_amount": value,
+                            "credit_amount": 0,
+                            "voucher_type": "Purchase Invoice",
+                            "voucher_number": self.name
+                        })
+            else:
 
-            inventory_account = frappe.db.get_value("Warehouse", item.warehouse, "inventory_account")
-
-            valuation_rate = item.rate or 0
-            valuation_amount = item.qty * valuation_rate
-
-            # اجمع حسب (الحساب، المخزن)
-            key = (inventory_account, item.warehouse)
-            inventory_totals[key] += valuation_amount
-
-            stock_entries.append({
-                "posting_date": self.posting_date,
-                "posting_time": nowtime(),
-                "item": item.item,
-                "warehouse": item.warehouse,
-                "qty": item.qty,
-                "valuation_rate": valuation_rate,
-                "voucher_type": "Purchase Invoice",
-                "voucher_no": self.name,
-                "is_cancelled": 0
-            })
-
-        # GL entry: Debit Inventory لكل حساب ومخزن
-        for (account, warehouse), value in inventory_totals.items():
-            if value:
-                entries.append({
+                inventory_account = frappe.db.get_value("Warehouse", item.warehouse, "inventory_account")
+                valuation_rate = item.rate or 0
+                valuation_amount = item.qty * valuation_rate
+                key = (inventory_account, item.warehouse)
+                inventory_totals[key] += valuation_amount
+                stock_entries.append({
                     "posting_date": self.posting_date,
-                    "due_date": self.payment_due_date,
-                    "account": account,
-                    "debit_amount": value,
-                    "credit_amount": 0,
+                    "posting_time": nowtime(),
+                    "item": item.item,
+                    "warehouse": item.warehouse,
+                    "qty": item.qty,
+                    "valuation_rate": valuation_rate,
                     "voucher_type": "Purchase Invoice",
-                    "voucher_number": self.name
+                    "voucher_no": self.name,
+                    "is_cancelled": 0
                 })
+                # GL entry: Debit Inventory لكل حساب ومخزن
+                for (account, warehouse), value in inventory_totals.items():
+                    if value:
+                        entries.append({
+                            "posting_date": self.posting_date,
+                            "due_date": self.payment_due_date,
+                            "account": account,
+                            "debit_amount": value,
+                            "credit_amount": 0,
+                            "voucher_type": "Purchase Invoice",
+                            "voucher_number": self.name
+                        })
          # GL entry: Credit Supplier
         entries.append({
             "posting_date": self.posting_date,
