@@ -76,25 +76,25 @@ function update_totals(frm) {
 }
 
 frappe.ui.form.on('Purchase Invoice Item', {
-  is_service: function(frm, cdt, cdn) {
+#نسخ قيمة is service من Item
+    item: function(frm, cdt, cdn) {
+        var row = locals[cdt][cdn];
+        if (row.item) {
+            frappe.db.get_value("Item", row.item, "is_service", function(res) {
+                frappe.model.set_value(cdt, cdn, "is_service", res.is_service ? 1 : 0);
+            });
+        }
+    },
+    is_service: function(frm, cdt, cdn) {
     let row = locals[cdt][cdn];
     let grid_row = frm.fields_dict.items.grid.get_row(cdn);
 
     if (grid_row) {
       grid_row.toggle_display("warehouse", row.is_service != 1);
     }
-  },
-
-  item_code: function(frm, cdt, cdn) {
-    let row = locals[cdt][cdn];
-    frappe.db.get_value("Item", row.item_code, "is_service", function (res) {
-      frappe.model.set_value(cdt, cdn, "is_service", res.is_service);
-      // استدعي is_service بعد جلب القيمة
-      let grid_row = frm.fields_dict.items.grid.get_row(cdn);
-      if (grid_row) {
-        grid_row.toggle_display("warehouse", res.is_service != 1);
-      }
-    });
   }
 });
+
+
+
 

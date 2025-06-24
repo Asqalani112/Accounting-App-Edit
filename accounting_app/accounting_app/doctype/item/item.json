@@ -12,7 +12,8 @@
   "default_unit_of_measurement",
   "standard_selling_rate",
   "default_warehouse",
-  "valuation_rate"
+  "valuation_rate",
+  "is_service"
  ],
  "fields": [
   {
@@ -49,11 +50,17 @@
    "fieldname": "valuation_rate",
    "fieldtype": "Currency",
    "label": "Valuation Rate"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_service",
+   "fieldtype": "Check",
+   "label": "Is Service?"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-03 14:44:31.347367",
+ "modified": "2025-06-24 15:05:10.879837",
  "modified_by": "Administrator",
  "module": "Accounting App",
  "name": "Item",
