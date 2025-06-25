@@ -12,7 +12,9 @@
   "default_unit_of_measurement",
   "standard_selling_rate",
   "default_warehouse",
-  "valuation_rate"
+  "valuation_rate",
+  "is_service",
+  "expense_account"
  ],
  "fields": [
   {
@@ -32,7 +34,7 @@
    "fieldname": "default_unit_of_measurement",
    "fieldtype": "Select",
    "label": "Default Unit of Measurement",
-   "options": "Piece\nBox\nCarton"
+   "options": "Piece\nBox\nCarton\nService"
   },
   {
    "fieldname": "standard_selling_rate",
@@ -49,11 +51,23 @@
    "fieldname": "valuation_rate",
    "fieldtype": "Currency",
    "label": "Valuation Rate"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_service",
+   "fieldtype": "Check",
+   "label": "Is Service?"
+  },
+  {
+   "fieldname": "expense_account",
+   "fieldtype": "Link",
+   "label": "Expense Account",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-06-03 14:44:31.347367",
+ "modified": "2025-06-25 10:22:57.502071",
  "modified_by": "Administrator",
  "module": "Accounting App",
  "name": "Item",
