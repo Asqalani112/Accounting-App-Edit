@@ -31,7 +31,7 @@ class PurchaseInvoice(Document, AccountController, StockController):
         self.make_stock_ledger_entries(stock_entries)
 
     def process_service_item(self, item, expense_totals):
-        expense_account = frappe.db.get_value("Warehouse", item.warehouse, "expense_account")
+        expense_account = frappe.db.get_value("Item", item.item, "expense_account")
         key = (expense_account, item.warehouse)
         expense_totals[key] += item.qty * item.rate
 

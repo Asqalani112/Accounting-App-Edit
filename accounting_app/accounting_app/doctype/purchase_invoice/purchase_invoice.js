@@ -18,20 +18,17 @@ frappe.ui.form.on('Purchase Invoice', {
             }
         }
     });
-    frm.set_query('expense_account', () =>{
-        return{
-            filters: {
-            account_type: 'Expense',
-            is_group: 0
-            }
-        }
-    });
+
 
   }
 });
 frappe.ui.form.on('Purchase Invoice', {
   items_on_form_rendered: function(frm) {
+  toggle_warehouse_fields(frm)
     update_totals(frm);
+  },
+  refresh: function(frm) {
+    toggle_warehouse_fields(frm);
   },
   validate: function(frm) {
     update_totals(frm); // تأكيد آخر قبل الحفظ
@@ -76,7 +73,7 @@ function update_totals(frm) {
 }
 
 frappe.ui.form.on('Purchase Invoice Item', {
-#نسخ قيمة is service من Item
+//نسخ قيمة is service من Item
     item: function(frm, cdt, cdn) {
         var row = locals[cdt][cdn];
         if (row.item) {
@@ -91,9 +88,23 @@ frappe.ui.form.on('Purchase Invoice Item', {
 
     if (grid_row) {
       grid_row.toggle_display("warehouse", row.is_service != 1);
+       if (row.is_service == 1) {
+            frappe.model.set_value(cdt, cdn, "warehouse", "");
+        }
+        frm.refresh_field("items");
     }
   }
 });
+function toggle_warehouse_fields(frm) {
+  (frm.doc.items || []).forEach(row => {
+    let grid_row = frm.fields_dict.items.grid.get_row(row.name);
+    if (grid_row) {
+      grid_row.toggle_display("warehouse", row.is_service != 1);
+    }
+  });
+  frm.refresh_field("items");
+}
+
 
 
 
